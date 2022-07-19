@@ -11,9 +11,12 @@
   <body  style="background-color: black; overflow: hidden;">
 
     <div class="game-container">
-        <!-- <div class="player-info" style="float:right;">
-            <span style="font-family: 'Roboto Condensed', sans-serif; color: white; font-size: 25px; background-color: black; z-index: 100;"> YOU &#127919; S1mple</span>
-        </div> -->
+        <div class="player-info" style="float:right;">
+            &#127919;
+            <span class ="score" style="font-family: 'Roboto Condensed', sans-serif; color: white; font-size: 25px; background-color: black; z-index: 105 !important;"> 
+                0 KILLS (?%)
+            </span>
+        </div>
 
         <img src="images/csgo_dust.jpg" style="display: block; margin-left: auto; margin-right: auto; width:auto; height:100%; position:absolute; top: 0; left: 0;" alt="background">
 
@@ -30,6 +33,8 @@
     <script src="app.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
+        let clicks = 0;
+
         $('body').css('cursor', 'none');
         const exampleT = $(".t");
         
@@ -101,11 +106,16 @@
 
             // Check for left button
             if (e.button == 0 && closestT !== null) { // Top left is 0, 0
+                clicks += 1;
+
                 let tLeft = e.pageX - 54;
                 let tTop = e.pageY - 22;
                 closestT.animate({left: tLeft, top: tTop}, 150);
                 closestT.animate({opacity: 0}, 200);
                 setTimeout(function(){ closestT.remove() }, 400);
+
+                var elem = $(".player-info");
+                elem.children("span").text(`${clicks}/${clicks} (100%)`);
             }
         });
     </script>
