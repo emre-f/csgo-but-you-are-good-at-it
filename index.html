@@ -1,0 +1,113 @@
+<html>
+  <head>
+    <title>CS:GO But You are Good at It</title>
+    <link rel="icon" href="favicon.ico?" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;700&display=swap" rel="stylesheet">
+  </head>
+  <body  style="background-color: black; overflow: hidden;">
+
+    <div class="game-container">
+        <div class="player-info" style="float:right;">
+            <span style="font-family: 'Roboto Condensed', sans-serif; color: white; font-size: 25px; background-color: black; z-index: 100;"> YOU &#127919; S1mple</span>
+        </div>
+
+        <img src="images/csgo_dust.jpg" style="display: block; margin-left: auto; margin-right: auto; width:auto; height:100%; position:absolute; top: 0; left: 0;" alt="background">
+
+        <div class="t" style="position: absolute; left: 150px; top: 500px; min-width: 200px; min-height: 200px; padding: 13px; display: inline-block;">
+            <img src="images/csgo_t.png" style="left: 0px; position:absolute; z-index: 2; height: 100%; width: auto;" alt="t">
+        </div>
+        
+        <div class="mark" style="position:absolute; background-color: black; height:10000px; width: 1px; z-index: 100;"></div>
+        <div class="mark" style="position:absolute; background-color: black; height:1px; width: 10000px; z-index: 100;"></div>
+        <div class="mark2" style="position:absolute; background-color: black; height:10000px; width: 1px; z-index: 100;"></div>
+        <div class="mark2" style="position:absolute; background-color: black; height:1px; width: 10000px; z-index: 100;"></div>
+    </div>
+    
+    <script src="app.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        $('body').css('cursor', 'none');
+        const exampleT = $(".t");
+        
+        function spawnT () {
+            console.log("Spawning t");
+            let t = exampleT;
+            let newT = t.clone();
+
+            let positions = [
+                {x: 150, y: 500},
+                {x: 900, y: 550},
+                {x: 150, y: 300},
+                {x: 600, y: 300},
+            ];
+
+            let chosenPos = positions[Math.floor(Math.random() * positions.length)];
+
+            newT.css("left", chosenPos.x - 200 + Math.round(Math.random() * 400));
+            newT.css("top", chosenPos.y - 200 + Math.round(Math.random() * 400));
+            newT.css("opacity", 1);
+
+            newT.appendTo('.game-container');
+        }
+        
+        function spawner () {
+            console.log("Spawner running")
+            var allT = $(".t").map(function() {
+                return this.innerHTML;
+            }).get();
+
+            if (allT.length < 5) {
+                spawnT();
+            }
+
+            setTimeout(function () { spawner() }, 1000 + Math.random() * 1000);
+        }
+
+        spawner();
+
+        $(document).on('mousemove', function(e){
+            $('.mark').css({
+            left:  e.pageX,
+            top:   e.pageY
+            });
+
+            $('.mark2').css({
+            right:  window.innerWidth - e.pageX,
+            bottom: window.innerHeight - e.pageY
+            });
+        });
+
+        $(document).click(function(e) { 
+            let closestT = null;
+            let bestDistance = Number.MAX_VALUE;
+
+            $('.t').each(function() {
+                let x = $(this).css("left").match(/\d/g);
+                x = x.join("");
+                let y = $(this).css("top").match(/\d/g);
+                y = y.join("");
+
+                let newDistance = Math.abs(x - e.pageX) + Math.abs(y - e.pageY);
+                console.log("Unit at x: " + x + ", y: " + y + ". Distance is: " + newDistance);
+                if (newDistance < bestDistance) {
+                    bestDistance = newDistance;
+                    closestT = $(this);
+                }
+            });
+
+            // Check for left button
+            if (e.button == 0 && closestT !== null) { // Top left is 0, 0
+                let tLeft = e.pageX - 54;
+                let tTop = e.pageY - 22;
+                closestT.animate({left: tLeft, top: tTop}, 150);
+                closestT.animate({opacity: 0}, 200);
+                setTimeout(function(){ closestT.remove() }, 400);
+            }
+        });
+    </script>
+  </body>
+</html>
